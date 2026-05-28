@@ -14,9 +14,11 @@ return new class extends Migration
     {
         DB::statement('ALTER TABLE students MODIFY degree_id BIGINT UNSIGNED NOT NULL DEFAULT 1');
 
-        Schema::table('students', function (Blueprint $table) {
-            $table->foreign('degree_id')->references('id')->on('degrees')->cascadeOnUpdate()->restrictOnDelete();
-        });
+        if (! $this->foreignKeyExists()) {
+            Schema::table('students', function (Blueprint $table) {
+                $table->foreign('degree_id')->references('id')->on('degrees')->cascadeOnUpdate()->restrictOnDelete();
+            });
+        }
     }
 
     /**
@@ -24,8 +26,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->dropForeign(['degree_id']);
-        });
+        if ($this->foreignKeyExists()) {
+            Schema::table('students', function (Blueprint $table) {
+                $table->dropForeign(['degree_id']);
+            });
+        }
+    }
+
+    private function foreignKeyExists(): bool
+    {
+        return (bool) DB::selectOne("
+            SELECT CONSTRAINT_NAME
+            FROM information_schema.TABLE_CONSTRAINTS
+            WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = 'students'
+                AND CONSTRAINT_NAME = 'students_degree_id_foreign'
+                AND CONSTRAINT_TYPE = 'FOREIGN KEY'
+        ");
     }
 };
