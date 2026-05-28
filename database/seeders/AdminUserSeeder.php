@@ -13,7 +13,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
             [
                 'name' => env('ADMIN_NAME', 'Administrator'),
@@ -26,5 +26,7 @@ class AdminUserSeeder extends Seeder
                 'must_change_password' => false,
             ]
         );
+
+        $this->command?->info("Admin user ready: {$admin->email}");
     }
 }

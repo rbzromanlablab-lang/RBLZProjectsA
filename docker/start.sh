@@ -8,5 +8,5 @@ php -r "require 'vendor/autoload.php'; \$app = require 'bootstrap/app.php'; \$ap
 
 php artisan cache:clear || true
 php artisan migrate --force
-php artisan db:seed --force
+php artisan db:seed --class=AdminUserSeeder --force
 php artisan serve --host=0.0.0.0 --port="${PORT:-10000}"
