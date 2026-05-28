@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('must_change_password')->default(false)->after('role');
-        });
+        if (! Schema::hasColumn('users', 'must_change_password')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->boolean('must_change_password')->default(false)->after('role');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('must_change_password');
-        });
+        if (Schema::hasColumn('users', 'must_change_password')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('must_change_password');
+            });
+        }
     }
 };
