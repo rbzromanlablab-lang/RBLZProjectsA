@@ -21,8 +21,4 @@ RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 10000
 
-CMD php artisan config:clear \
-    && php artisan cache:clear \
-    && php artisan storage:link || true; \
-    php artisan migrate --force \
-    && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
+CMD ["sh", "docker/start.sh"]
