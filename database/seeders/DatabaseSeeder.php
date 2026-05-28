@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Add seed data here when needed.
+        $this->call(AdminUserSeeder::class);
     }
 }
